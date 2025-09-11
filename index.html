@@ -103,9 +103,9 @@ h1{font-size:clamp(36px, 5vw, 56px); margin:.2rem 0 1rem; line-height:1.06}
 .price h3{margin:.2rem 0 .3rem; font-size:1.4rem}
 .price .num{font-size:1.6rem; font-weight:900}
 
-.gallery{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.gallery{ grid-template-columns:repeat(3,1fr); gap:12px}
 .gallery img{
-  width:100%; height:280px; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.06)
+  width:100%; height: auto; object-fit:cover; border-radius:14px; border:1px solid rgba(255,255,255,.06)
 }
 
 .cta{
@@ -140,6 +140,231 @@ footer{padding:38px 0; color:#a8a8af}
 }
 .brand span{margin-right:10px }
 }
+
+/* ====== ANIMATIONS / MICRO-INTERACTIONS ====== */
+
+/* Уважение к reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* Глобальные reveal-состояния (JS добавит класс .in) */
+.reveal { 
+  opacity: 0; transform: translateY(18px) scale(.98);
+  transition: opacity .6s ease, transform .6s ease, filter .6s ease;
+  will-change: transform, opacity;
+}
+.reveal.in { 
+  opacity: 1; transform: none; 
+}
+
+/* Стили для стейджинга (чуть разная динамика по типам блоков) */
+.reveal.card { transition-duration: .7s }
+.reveal.price { transition-duration: .7s }
+.reveal.gallery-img { transition-duration: .7s }
+.reveal.from-left { transform: translateX(-20px); }
+.reveal.from-right { transform: translateX(20px); }
+.reveal.from-left.in, .reveal.from-right.in { transform: none; }
+
+/* Hero badge — мягкое «дыхание» свечения */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,106,0,0.0); }
+  50% { box-shadow: 0 0 36px rgba(255,106,0,0.25); }
+}
+.badge {
+  animation: glowPulse 3.2s ease-in-out infinite;
+}
+
+/* Кнопки — лёгкий «shine» при ховере */
+.btn {
+  position: relative; overflow: hidden;
+  background-image:
+    linear-gradient(180deg,var(--orange),#e05500),
+    linear-gradient(120deg, rgba(255,255,255,.0) 0%, rgba(255,255,255,.25) 50%, rgba(255,255,255,.0) 100%);
+  background-size: auto, 250% 250%;
+  background-position: center, -200% center;
+}
+.btn:hover {
+  background-position: center, 200% center;
+}
+.btn::after {
+  content:""; position:absolute; inset:-60%;
+  background: radial-gradient(120px 60px at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,.12), transparent 60%);
+  transition: opacity .25s;
+  opacity: 0;
+}
+.btn:hover::after { opacity: .6; }
+
+/* Карточки — лёгкий подъём и подсветка рамки */
+.card, .price, .cta .panel {
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.card:hover, .price:hover, .cta .panel:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(0,0,0,.28);
+  border-color: rgba(255,255,255,.12);
+}
+
+/* Галерея — мягкий zoom при ховере */
+.gallery img {
+  transition: transform .5s ease, filter .5s ease;
+}
+.gallery img:hover {
+  transform: scale(1.03);
+  filter: contrast(1.05) saturate(1.05);
+}
+
+/* Hero-фото — параллакс и лёгкая «плавучесть» */
+@keyframes floatY {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-6px); }
+}
+.hero .photo {
+  animation: floatY 8s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+/* Topbar — микроизменение после скролла */
+.topbar.scrolled {
+  background: rgba(11,11,12,.82);
+  box-shadow: 0 6px 20px rgba(0,0,0,.25);
+}
+
+/* Прогресс-бар скролла */
+.scroll-progress {
+  position: fixed; left: 0; top: 0; height: 3px; width: 0%;
+  background: linear-gradient(90deg, var(--orange), var(--orange-2));
+  z-index: 9999; pointer-events: none;
+}
+
+/* CTA градиент — «дышащий» блик */
+@keyframes sweep {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.cta {
+  background-image:
+    radial-gradient(600px 240px at 90% 10%, rgba(255,106,0,.25), transparent),
+    linear-gradient(120deg, rgba(255,255,255,.02) 0%, rgba(255,255,255,.06) 50%, rgba(255,255,255,.02) 100%);
+  background-size: auto, 250% 250%;
+  animation: sweep 14s linear infinite;
+}
+
+/* Небольшая инерция ссылки Instagram */
+a[href*="instagram.com"] { transition: color .25s ease, text-shadow .25s ease }
+a[href*="instagram.com"]:hover { color:#fff; text-shadow: 0 0 20px rgba(255,106,0,.5) }
+
+
+
+/* Базовий контейнер */
+.slider {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+/* Стрічка слайдів створюється JS-ом (class .slider-track) */
+.slider-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+/* Кожен слайд */
+.slider-slide {
+  display:flex;                              /* центрируем изображение */
+  align-items:center;
+  justify-content:center;
+  flex: 0 0 100%;
+  max-height: 80vh;                          /* можно поменять по желанию */
+}
+
+.slider-slide img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;          /* заповнюємо кадр акуратно */
+  aspect-ratio: 16/9;         /* стабільна висота на мобільних */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Стрілки */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  border: none;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(2px);
+  transition: background 0.2s ease;
+}
+.slider-btn:hover { background: rgba(0,0,0,0.65); }
+.slider-btn.prev { left: 12px; }
+.slider-btn.next { right: 12px; }
+
+/* Точки-пагінація */
+.slider-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(3px);
+}
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease;
+}
+.slider-dot.active {
+  background: #fff;
+  transform: scale(1.25);
+}
+
+/* Адаптив: можна показувати 2/3 слайди на великих, якщо захочете.
+   Зараз залишаю по одному — фокус на великих фото. */
+@media (min-width: 992px) {
+  .slider-slide img { aspect-ratio: 21/9; 
+
+}
+
+
+}
+
+@media (max-width: 550px) {
+    .slider-slide img { aspect-ratio: 21/9; 
+  width: 100%;
+  height: auto;                               /* важное: больше НЕ 100% */
+  max-height: 80vh;                           /* уважает высоту экрана */
+  object-fit: contain;                        /* показывать целиком, без кропа */
+  /* снять то, что было раньше */
+  aspect-ratio: auto;                         /* если задавался ранее */
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+
+}
+
+
 </style>
 </head>
 <body>
@@ -232,20 +457,30 @@ footer{padding:38px 0; color:#a8a8af}
   <div class="container">
     <div class="kicker">Наші роботи</div>
     <h2>Реальні виїзди та завантаження</h2>
-    <div class="gallery">
-          <img src="images/gallery_01.jpg" alt="Евакуатор Львів - робота 1">
-          <img src="images/gallery_02.jpg" alt="Евакуатор Львів - робота 2">
-          <img src="images/gallery_03.jpg" alt="Евакуатор Львів - робота 3">
-          <img src="images/gallery_04.jpg" alt="Евакуатор Львів - робота 4">
-          <img src="images/gallery_05.jpg" alt="Евакуатор Львів - робота 5">
-          <img src="images/gallery_06.jpg" alt="Евакуатор Львів - робота 6">
-          <img src="images/gallery_07.jpg" alt="Евакуатор Львів - робота 7">
-          <img src="images/gallery_08.jpg" alt="Евакуатор Львів - робота 8">
-          <img src="images/gallery_09.jpg" alt="Евакуатор Львів - робота 9">
-          <img src="images/gallery_10.jpg" alt="Евакуатор Львів - робота 10">
+
+    <div class="gallery slider" aria-label="Фотогалерея евакуатора">
+      <!-- Ваші <img> як і були -->
+      <img src="images/gallery_01.jpg" alt="Евакуатор Львів - робота 1" loading="lazy">
+      <img src="images/gallery_02.jpg" alt="Евакуатор Львів - робота 2" loading="lazy">
+      <img src="images/gallery_03.jpg" alt="Евакуатор Львів - робота 3" loading="lazy">
+      <img src="images/gallery_04.jpg" alt="Евакуатор Львів - робота 4" loading="lazy">
+      <img src="images/gallery_05.jpg" alt="Евакуатор Львів - робота 5" loading="lazy">
+      <img src="images/gallery_06.jpg" alt="Евакуатор Львів - робота 6" loading="lazy">
+      <img src="images/gallery_07.jpg" alt="Евакуатор Львів - робота 7" loading="lazy">
+      <img src="images/gallery_08.jpg" alt="Евакуатор Львів - робота 8" loading="lazy">
+      <img src="images/gallery_09.jpg" alt="Евакуатор Львів - робота 9" loading="lazy">
+      <img src="images/gallery_10.jpg" alt="Евакуатор Львів - робота 10" loading="lazy">
+
+      <!-- Кнопки -->
+      <button class="slider-btn prev" aria-label="Попереднє фото">❮</button>
+      <button class="slider-btn next" aria-label="Наступне фото">❯</button>
+
+      <!-- Точки -->
+      <div class="slider-dots" aria-hidden="true"></div>
     </div>
   </div>
 </section>
+
 
 <section class="section" id="contact">
   <div class="container cta">
@@ -272,7 +507,7 @@ footer{padding:38px 0; color:#a8a8af}
     </div>
   </div>
 </section>
-
+<div class="scroll-progress" id="scrollProgress"></div>
 <footer>
   <div class="container" style="display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap">
     <div>© 2025 DML Auto • Евакуатор Львів 24/7</div>
@@ -286,10 +521,239 @@ document.querySelectorAll('[data-call]').forEach(btn=>{
     console.log('call click');
   });
 });
+
+/* ====== PREMIUM ANIMS JS (без изменения разметки) ====== */
+(function(){
+  const supportsIO = 'IntersectionObserver' in window;
+
+  // 1) Проставляем .reveal на нужные элементы (без правки HTML)
+  const toReveal = [
+    ...document.querySelectorAll('.hero .photo'),
+    ...document.querySelectorAll('.card'),
+    ...document.querySelectorAll('.price'),
+    ...document.querySelectorAll('.gallery img'),
+    ...document.querySelectorAll('.cta .panel'),
+    ...document.querySelectorAll('.section h2, .section .kicker, .lead')
+  ];
+
+  // Тонкая настройка «направления»
+  document.querySelectorAll('.photo').forEach(el => el.classList.add('reveal','from-right'));
+  document.querySelectorAll('.section .kicker, .section h2').forEach(el => el.classList.add('reveal','from-left'));
+  toReveal.forEach(el => el.classList.add('reveal'));
+
+  if (supportsIO) {
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if (entry.isIntersecting) {
+          // Стагер через кастомную задержку
+          const idx = [...entry.target.parentElement?.children || []].indexOf(entry.target);
+          entry.target.style.transitionDelay = (Math.min(idx, 6) * 70) + 'ms';
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    },{
+      rootMargin: '0px 0px -10% 0px',
+      threshold: .15
+    });
+
+    toReveal.forEach(el=>io.observe(el));
+  } else {
+    // Fallback: сразу показать
+    toReveal.forEach(el=>el.classList.add('in'));
+  }
+
+  // 2) Topbar state при скролле
+  const topbar = document.querySelector('.topbar');
+  const onScrollTopbar = () => {
+    if (window.scrollY > 12) topbar.classList.add('scrolled');
+    else topbar.classList.remove('scrolled');
+  };
+  onScrollTopbar();
+  window.addEventListener('scroll', onScrollTopbar, {passive:true});
+
+  // 3) Прогресс-бар скролла
+  const progressEl = document.getElementById('scrollProgress');
+  const onScrollProgress = () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    progressEl.style.width = (scrolled * 100).toFixed(2) + '%';
+  };
+  onScrollProgress();
+  window.addEventListener('scroll', onScrollProgress, {passive:true});
+  window.addEventListener('resize', onScrollProgress);
+
+  // 4) Параллакс для hero-фото (едва заметный, премиальный)
+  const heroPhoto = document.querySelector('.hero .photo');
+  if (heroPhoto) {
+    const damp = 1/40; // чем больше — тем слабее параллакс
+    heroPhoto.addEventListener('mousemove', (e)=>{
+      const r = heroPhoto.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const dx = (e.clientX - cx) * damp;
+      const dy = (e.clientY - cy) * damp;
+      heroPhoto.style.transform = `translate3d(${dx}px, ${dy}px, 0)`;
+    });
+    heroPhoto.addEventListener('mouseleave', ()=>{
+      heroPhoto.style.transform = '';
+    });
+  }
+
+  // 5) Подсветка кнопок под курсором (shine hotspot)
+  document.querySelectorAll('.btn').forEach(btn=>{
+    btn.addEventListener('pointermove', (e)=>{
+      const r = btn.getBoundingClientRect();
+      const mx = ((e.clientX - r.left) / r.width) * 100;
+      const my = ((e.clientY - r.top) / r.height) * 100;
+      btn.style.setProperty('--mx', `${mx}%`);
+      btn.style.setProperty('--my', `${my}%`);
+    });
+  });
+})();
 </script>
 
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "LocalBusiness", "name": "DML Auto — Евакуатор Львів 24/7", "url": "", "image": ["images/gallery_01.jpg"], "telephone": "+380737773710", "areaServed": "Lviv and Lviv Oblast", "priceRange": "1200-1600 UAH (city), 30 UAH/km intercity", "sameAs": ["https://www.instagram.com/dml_auto_lviv"], "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "opens": "00:00", "closes": "23:59"}], "serviceType": "Vehicle towing and roadside assistance"}
 </script>
+
+
+
+
+<script>
+(function () {
+  const slider = document.querySelector('.slider');
+  if (!slider) return;
+
+  // Збираємо наявні <img>
+  const images = [...slider.querySelectorAll('img')];
+
+  // Створюємо track і обгортаємо кожне зображення у .slider-slide
+  const track = document.createElement('div');
+  track.className = 'slider-track';
+
+  images.forEach(img => {
+    const slide = document.createElement('div');
+    slide.className = 'slider-slide';
+    slide.appendChild(img);
+    track.appendChild(slide);
+  });
+
+  // Вставляємо track на початок контейнера
+  slider.insertBefore(track, slider.firstChild);
+
+  // Елементи керування
+  const btnPrev = slider.querySelector('.slider-btn.prev');
+  const btnNext = slider.querySelector('.slider-btn.next');
+  const dotsWrap = slider.querySelector('.slider-dots');
+
+  let index = 0;
+  const total = images.length;
+  let startX = 0, currentX = 0, isDragging = false;
+  let autoTimer = null;
+  const AUTO_MS = 6000; // автоперегортання (можна 0, щоб вимкнути)
+
+  // Пагінація (точки)
+  const dots = [];
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', `Перейти до слайду ${i+1}`);
+    dot.addEventListener('click', () => goTo(i, true));
+    dotsWrap.appendChild(dot);
+    dots.push(dot);
+  }
+
+  function update() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+  }
+
+  function goTo(i, stopAuto = false) {
+    index = (i + total) % total;
+    update();
+    if (stopAuto) restartAuto();
+  }
+
+  function next(stopAuto = false) { goTo(index + 1, stopAuto); }
+  function prev(stopAuto = false) { goTo(index - 1, stopAuto); }
+
+  // Кнопки
+  btnNext.addEventListener('click', () => next(true));
+  btnPrev.addEventListener('click', () => prev(true));
+
+  // Клавіатура
+  slider.setAttribute('tabindex', '0');
+  slider.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') next(true);
+    if (e.key === 'ArrowLeft')  prev(true);
+  });
+
+  // Свайпи (тач)
+  track.addEventListener('touchstart', onStart, { passive: true });
+  track.addEventListener('touchmove', onMove, { passive: true });
+  track.addEventListener('touchend', onEnd);
+
+  // Миша (опційно)
+  track.addEventListener('mousedown', (e) => { e.preventDefault(); onStart(e); });
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onEnd);
+
+  function onStart(e) {
+    isDragging = true;
+    startX = getX(e);
+    currentX = startX;
+    track.style.transition = 'none';
+    stopAuto();
+  }
+
+  function onMove(e) {
+    if (!isDragging) return;
+    currentX = getX(e);
+    const dx = currentX - startX;
+    // Тягнемо стрічку разом з курсором/пальцем
+    const percent = dx / slider.clientWidth * 100;
+    track.style.transform = `translateX(calc(-${index * 100}% + ${percent}%))`;
+  }
+
+  function onEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.transition = '';
+    const dx = currentX - startX;
+    const threshold = slider.clientWidth * 0.18; // поріг ~18%
+    if (dx > threshold) prev(true);
+    else if (dx < -threshold) next(true);
+    else update(); // відкотити
+    restartAuto();
+  }
+
+  function getX(e) {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+  }
+
+  // Автопрокрутка
+  function startAuto() {
+    if (AUTO_MS <= 0) return;
+    stopAuto();
+    autoTimer = setInterval(() => next(false), AUTO_MS);
+  }
+  function stopAuto() {
+    if (autoTimer) clearInterval(autoTimer);
+    autoTimer = null;
+  }
+  function restartAuto() {
+    startAuto();
+  }
+
+  // Ініт
+  update();
+  startAuto();
+
+  // Респонсив (на випадок зміни розміру)
+  window.addEventListener('resize', update);
+})();
+</script>
+
 </body>
 </html>
