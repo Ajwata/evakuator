@@ -5,15 +5,15 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://dml-auto.com/#services</loc>
+    <loc>https://dml-evakuator.com/#services</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dml-auto.com/#pricing</loc>
+    <loc>https://dml-evakuator.com/#pricing</loc>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dml-auto.com/#contact</loc>
+    <loc>https://dml-evakuator.com/#contact</loc>
     <priority>0.8</priority>
   </url>
 </urlset>
